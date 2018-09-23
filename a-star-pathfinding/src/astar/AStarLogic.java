@@ -59,6 +59,17 @@ public class AStarLogic {
 		}
 	}
 
+	/**
+	 * Reconstruct the path from goal to start
+	 */
+	public void reconstructPath() {
+		Node current = endNode;
+		while(!current.isStart()) {
+			path.add(current);
+			current = current.getParent();
+		}
+	}
+
 	public void init() {
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {
