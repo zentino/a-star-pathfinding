@@ -36,6 +36,29 @@ public class AStarLogic {
 		visited.add(startNode);
 	}
 
+	/**
+	 * Pick and remove a node (location) from the frontier.
+	 * Expand the frontier by looking at the neighbors of the current node.
+	 * If a neighbor wasn't visited, add it to the visited list and frontier queue.
+	 */
+	public void findPath() {
+		if(!frontier.isEmpty() && !pathFound) {
+			Node current = frontier.poll();
+			// If current == goal
+			if(current.getX() == endNode.getX() && current.getY() == endNode.getY()){
+				pathFound = true;
+				return;
+			}
+			for(Node nextNode : current.getNeighbors()) {
+				if(!visited.contains(nextNode)) {
+					nextNode.setParent(current);
+					frontier.offer(nextNode);
+					visited.add(nextNode);
+				}
+			}
+		}
+	}
+
 	public void init() {
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {
