@@ -37,20 +37,20 @@ public class AStarLogic {
 	}
 
 	/**
-	 * Pick and remove a node (location) from the frontier.
-	 * Expand the frontier by looking at the neighbors of the current node.
-	 * If a neighbor wasn't visited, add it to the visited list and frontier queue.
+	 * Pick and remove a node (location) from the frontier. Expand the frontier
+	 * by looking at the neighbors of the current node. If a neighbor wasn't
+	 * visited, add it to the visited list and frontier queue.
 	 */
 	public void findPath() {
-		if(!frontier.isEmpty() && !pathFound) {
+		if (!frontier.isEmpty() && !pathFound) {
 			Node current = frontier.poll();
 			// If current == goal
-			if(current.getX() == endNode.getX() && current.getY() == endNode.getY()){
+			if (current.getX() == endNode.getX() && current.getY() == endNode.getY()) {
 				pathFound = true;
 				return;
 			}
-			for(Node nextNode : current.getNeighbors()) {
-				if(!visited.contains(nextNode)) {
+			for (Node nextNode : current.getNeighbors()) {
+				if (!visited.contains(nextNode)) {
 					nextNode.setParent(current);
 					frontier.offer(nextNode);
 					visited.add(nextNode);
@@ -64,7 +64,7 @@ public class AStarLogic {
 	 */
 	public void reconstructPath() {
 		Node current = endNode;
-		while(!current.isStart()) {
+		while (!current.isStart()) {
 			path.add(current);
 			current = current.getParent();
 		}
