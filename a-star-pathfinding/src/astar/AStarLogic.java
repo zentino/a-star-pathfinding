@@ -114,4 +114,20 @@ public class AStarLogic {
 			}
 		}
 	}
+
+	// ---------------------- GETTERS AND SETTERS ----------------------
+
+	public int getColumns() { return columns; }
+
+	public int getRows() { return rows; }
+
+	public Queue<Node> getFrontier() { return frontier; }
+
+	public List<Node> getVisited() { return visited; }
+
+	public List<Node> getPath() { return path; }
+
+	public Node getStartNode() { return startNode; }
+
+	public Node getEndNode() { return endNode;}
 }
