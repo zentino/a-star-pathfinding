@@ -28,7 +28,7 @@ public class AStarLogic {
 		findNeighbors();
 		startNode = nodes[0][18];
 		startNode.setStart(true);
-		endNode = nodes[24][7];
+		endNode = nodes[12][12];
 		endNode.setEnd(true);
 
 		// Define the comparator for the priority queue
@@ -93,7 +93,7 @@ public class AStarLogic {
 	 * @return heuristic cost
 	 */
 	private int calculateHeuristicCost(Node goal, Node start) {
-		int heuristicCost = Math.abs(goal.getX() - start.getX()) + Math.abs(goal.getY() - goal.getY());
+		int heuristicCost = Math.abs(goal.getX() - start.getX()) + Math.abs(goal.getY() - start.getY());
 		return heuristicCost;
 	}
 
@@ -106,30 +106,33 @@ public class AStarLogic {
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {
 				Node current = nodes[x][y];
-				if (y - 1 >= 0) {
-					current.addNeighbor(nodes[x][y - 1]);
-				}
-				// if(y - 1 >= 0 && x - 1 >= 0) {
-				// current.addNeighbor(nodes[x - 1][y - 1]);
-				// }
-				if (x - 1 >= 0) {
-					current.addNeighbor(nodes[x - 1][y]);
-				}
-				// if(x - 1 >= 0 && y + 1 < rows) {
-				// current.addNeighbor(nodes[x - 1][y + 1]);
-				// }
-				if (y + 1 < rows) {
-					current.addNeighbor(nodes[x][y + 1]);
-				}
-				// if(x + 1 < columns && y + 1 < rows) {
-				// current.addNeighbor(nodes[x + 1][y + 1]);
+
+				// if(x + 1 < columns && y - 1 >= 0) {
+				// current.addNeighbor(nodes[x + 1][y - 1]);
 				// }
 				if (x + 1 < columns) {
 					current.addNeighbor(nodes[x + 1][y]);
 				}
-				// if(x + 1 < columns && y - 1 >= 0) {
-				// current.addNeighbor(nodes[x + 1][y - 1]);
+				// if(x + 1 < columns && y + 1 < rows) {
+				// current.addNeighbor(nodes[x + 1][y + 1]);
 				// }
+				if (y + 1 < rows) {
+					current.addNeighbor(nodes[x][y + 1]);
+				}
+				// if(x - 1 >= 0 && y + 1 < rows) {
+				// current.addNeighbor(nodes[x - 1][y + 1]);
+				// }
+				if (x - 1 >= 0) {
+					current.addNeighbor(nodes[x - 1][y]);
+				}
+				// if(y - 1 >= 0 && x - 1 >= 0) {
+				// current.addNeighbor(nodes[x - 1][y - 1]);
+				// }
+
+				if (y - 1 >= 0) {
+					current.addNeighbor(nodes[x][y - 1]);
+				}
+
 			}
 		}
 	}
