@@ -13,7 +13,7 @@ public class Frame {
 	}
 
 	private void initGuiAndShow() {
-		jframe = new JFrame("A STAR PATHFINDER");
+		jframe = new JFrame("A* Pathfinder");
 		aStarLogic = new AStarLogic();
 		view = new AStarPanel(aStarLogic);
 		// controller = new Controller(model, view);

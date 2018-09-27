@@ -3,7 +3,7 @@ package astar;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
+import java.util.PriorityQueue;
 
 public class AStarLogic {
 
@@ -16,7 +16,7 @@ public class AStarLogic {
 	private boolean pathFound = false;
 
 	// Keep track of an expanding ring called the frontier
-	private Queue<Node> frontier = new ArrayDeque<Node>();
+	private PriorityQueue<Node> frontier;
 	// Keep track of all nodes that were visited
 	private List<Node> visited = new ArrayList<>();
 	// Used to reconstruct the path
@@ -26,11 +26,20 @@ public class AStarLogic {
 		nodes = new Node[columns][rows];
 		init();
 		findNeighbors();
-		startNode = nodes[2][9];
+		startNode = nodes[0][18];
 		startNode.setStart(true);
-		endNode = nodes[14][7];
+		endNode = nodes[24][7];
 		endNode.setEnd(true);
 
+		// Define the comparator for the priority queue
+		frontier = new PriorityQueue<Node>((node1, node2) -> {
+			if (node1.getHcost() < node2.getHcost()) {
+				return -1;
+			} else if (node1.getHcost() > node2.getHcost()) {
+				return 1;
+			}
+			return 0;
+		});
 		frontier.offer(startNode);
 		visited.add(startNode);
 	}
@@ -43,13 +52,14 @@ public class AStarLogic {
 	public void findPath() {
 		if (!frontier.isEmpty() && !pathFound) {
 			Node current = frontier.poll();
-			// If current == goal
+			// If current == goal (early exit)
 			if (current.getX() == endNode.getX() && current.getY() == endNode.getY()) {
 				pathFound = true;
 				return;
 			}
 			for (Node nextNode : current.getNeighbors()) {
 				if (!visited.contains(nextNode)) {
+					nextNode.setHcost(calculateHeuristicCost(endNode, nextNode));
 					nextNode.setParent(current);
 					frontier.offer(nextNode);
 					visited.add(nextNode);
@@ -75,6 +85,16 @@ public class AStarLogic {
 				nodes[x][y] = new Node(x, y);
 			}
 		}
+	}
+	/**
+	 * Calculates the Manhattan distance on a square grid
+	 * @param goal
+	 * @param start
+	 * @return heuristic cost
+	 */
+	private int calculateHeuristicCost(Node goal, Node start) {
+		int heuristicCost = Math.abs(goal.getX() - start.getX()) + Math.abs(goal.getY() - goal.getY());
+		return heuristicCost;
 	}
 
 	/**
@@ -120,7 +140,7 @@ public class AStarLogic {
 
 	public int getRows() { return rows; }
 
-	public Queue<Node> getFrontier() { return frontier; }
+	public PriorityQueue<Node> getFrontier() { return frontier; }
 
 	public List<Node> getVisited() { return visited; }
 
