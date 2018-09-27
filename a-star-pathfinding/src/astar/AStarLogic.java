@@ -11,7 +11,6 @@ public class AStarLogic {
 	private int rows = 25;
 	// Grid
 	private Node[][] nodes;
-
 	private Node startNode;
 	private Node endNode;
 	private boolean pathFound = false;
@@ -130,4 +129,6 @@ public class AStarLogic {
 	public Node getStartNode() { return startNode; }
 
 	public Node getEndNode() { return endNode;}
+
+	public boolean isPathFound() { return pathFound; }
 }
