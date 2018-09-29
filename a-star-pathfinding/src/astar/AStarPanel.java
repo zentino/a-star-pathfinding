@@ -14,11 +14,12 @@ import javax.swing.Timer;
 @SuppressWarnings("serial")
 public class AStarPanel extends JPanel implements ActionListener {
 
-	public static final int PANEL_WIDTH = 1100;
-	public static final int PANEL_HEIGHT = 1100;
+	public static final int PANEL_WIDTH = 1000;
+	public static final int PANEL_HEIGHT = 1000;
 	private AStarLogic aStarLogic;
 	private int myTimerDelay;
 	private Timer myTimer;
+	private boolean pathFinderStart = false;
 
 	private JButton startButton;
 	private JPanel buttons;
@@ -47,10 +48,12 @@ public class AStarPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(!aStarLogic.isPathFound()) {
-			aStarLogic.findPath();
-		} else {
-			aStarLogic.reconstructPath();
+		if(pathFinderStart) {
+			if(!aStarLogic.isPathFound()) {
+				aStarLogic.findPath();
+			} else {
+				aStarLogic.reconstructPath();
+			}
 		}
 		reDraw();
 	}
@@ -116,8 +119,13 @@ public class AStarPanel extends JPanel implements ActionListener {
 		g.fillRect(aStarLogic.getEndNode().getX() * rectWidth, aStarLogic.getEndNode().getY() * rectHeight, rectWidth,rectHeight);
 	}
 
-	//Draws all costs
+	/**
+	 * Draws all costs
+	 * @param current The current node
+	 * @param g
+	 */
 	public void drawCosts(Node current, Graphics g) {
+		// TODO REFACTOR
 		int columns = aStarLogic.getColumns();
 		int rows = aStarLogic.getRows();
 		// Width and height of a rectangle that represents the node
@@ -139,5 +147,9 @@ public class AStarPanel extends JPanel implements ActionListener {
 	// ---------------------- GETTERS AND SETTERS ----------------------
 
 	public JButton getStartButton() { return this.startButton; }
+
+	public boolean isPathFinderStart() {return pathFinderStart;}
+
+	public void setPathFinderStart(boolean pathFinderStart) { this.pathFinderStart = pathFinderStart; }
 
 }

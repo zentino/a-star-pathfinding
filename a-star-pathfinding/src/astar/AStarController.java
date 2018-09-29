@@ -24,7 +24,13 @@ public class AStarController {
 	}
 
 	private void startPathfinder(ActionEvent e) {
-		// TODO implement this method
+		if(!astarPanel.isPathFinderStart()) {
+			astarPanel.setPathFinderStart(true);
+			((JButton)e.getSource()).setText("Stop");
+		} else {
+			astarPanel.setPathFinderStart(false);
+			((JButton)e.getSource()).setText("Start");
+		}
 	}
 
 	private MouseAdapter getMouseAdapter() {

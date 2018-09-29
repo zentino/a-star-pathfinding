@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 
 public class Frame {
 	private JFrame jframe;
-	private AStarLogic aStarLogic;
-	private AStarController controller;
+	private AStarLogic astarLogic;
+	private AStarController astarController;
 	private AStarPanel view;
 
 	public Frame() {
@@ -14,9 +14,9 @@ public class Frame {
 
 	private void initGuiAndShow() {
 		jframe = new JFrame("A* Pathfinder");
-		aStarLogic = new AStarLogic();
-		view = new AStarPanel(aStarLogic);
-		// controller = new Controller(model, view);
+		astarLogic = new AStarLogic();
+		view = new AStarPanel(astarLogic);
+		astarController = new AStarController(astarLogic, view);
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jframe.setResizable(false);
 		jframe.add(view);

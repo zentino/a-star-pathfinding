@@ -27,6 +27,8 @@ public class AStarLogic {
 	// Keep track of the total movement cost from the start location
 	private HashMap<Node, Integer> costSoFar = new HashMap<>();
 
+	private List<Node> blockedNodes = new ArrayList<>();
+
 	public AStarLogic() {
 		nodes = new Node[columns][rows];
 		init();
