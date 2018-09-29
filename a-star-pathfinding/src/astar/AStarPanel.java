@@ -2,20 +2,26 @@ package astar;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+@SuppressWarnings("serial")
 public class AStarPanel extends JPanel implements ActionListener {
 
-	public static final int PANEL_WIDTH = 1000;
-	public static final int PANEL_HEIGHT = 1000;
+	public static final int PANEL_WIDTH = 1100;
+	public static final int PANEL_HEIGHT = 1100;
 	private AStarLogic aStarLogic;
 	private int myTimerDelay;
 	private Timer myTimer;
+
+	private JButton startButton;
+	private JPanel buttons;
 
 	public AStarPanel(AStarLogic aStarLogic) {
 		super();
@@ -25,7 +31,16 @@ public class AStarPanel extends JPanel implements ActionListener {
 		this.setLayout(null);
 		this.setVisible(true);
 
-		myTimerDelay = 10;
+		// Create UI elements
+		buttons = new JPanel();
+		startButton = new JButton("Start");
+		buttons.add(startButton);
+		// Transparent background
+		buttons.setOpaque(false);
+		buttons.setBounds(0, PANEL_HEIGHT - 50, PANEL_WIDTH, PANEL_HEIGHT);
+		this.add(buttons);
+
+		myTimerDelay = 500;
 		myTimer = new Timer(myTimerDelay, this);
 		myTimer.start();
 	}
@@ -38,7 +53,6 @@ public class AStarPanel extends JPanel implements ActionListener {
 			aStarLogic.reconstructPath();
 		}
 		reDraw();
-
 	}
 
 	@Override
@@ -74,16 +88,22 @@ public class AStarPanel extends JPanel implements ActionListener {
 		for (Node node : aStarLogic.getVisited()) {
 			g.setColor(Color.LIGHT_GRAY);
 			g.fillRect(node.getX() * rectWidth, node.getY() * rectHeight, rectWidth, rectHeight);
+			// TODO REFACTOR
+			drawCosts(node,g);
 		}
 		// Draw the expanding frontier
 		for (Node node : aStarLogic.getFrontier()) {
 			g.setColor(Color.CYAN);
 			g.fillRect(node.getX() * rectWidth, node.getY() * rectHeight, rectWidth, rectHeight);
+			// TODO REFACTOR
+			drawCosts(node,g);
 		}
 		// Draw the path
 		for (Node node : aStarLogic.getPath()) {
 			g.setColor(Color.YELLOW);
 			g.fillRect(node.getX() * rectWidth, node.getY() * rectHeight, rectWidth, rectHeight);
+			// TODO REFACTOR
+			drawCosts(node,g);
 		}
 
 		// Draw the start node
@@ -93,12 +113,31 @@ public class AStarPanel extends JPanel implements ActionListener {
 
 		// Draw the end node
 		g.setColor(Color.BLUE);
-		g.fillRect(aStarLogic.getEndNode().getX() * rectWidth, aStarLogic.getEndNode().getY() * rectHeight, rectWidth,
-				rectHeight);
+		g.fillRect(aStarLogic.getEndNode().getX() * rectWidth, aStarLogic.getEndNode().getY() * rectHeight, rectWidth,rectHeight);
 	}
+
+	//Draws all costs
+	public void drawCosts(Node current, Graphics g) {
+		int columns = aStarLogic.getColumns();
+		int rows = aStarLogic.getRows();
+		// Width and height of a rectangle that represents the node
+		int rectWidth = (PANEL_WIDTH / columns);
+		int rectHeight = (PANEL_HEIGHT / rows);
+		Font small = new Font("arial", Font.PLAIN, 10);
+		g.setColor(Color.black);
+		g.setFont(small);
+		g.drawString("F" +Integer.toString(current.getFcost()), current.getX() * rectWidth + 1, current.getY() * rectHeight + 10);
+		g.drawString("G" +Integer.toString(current.getGcost()), current.getX() * rectWidth + 1, current.getY() * rectHeight + rectHeight);
+		g.drawString("H" +Integer.toString(current.getHcost()), current.getX() * rectWidth + 1, current.getY() * rectHeight + rectHeight/2);
+	}
+
 
 	public void reDraw() {
 		this.repaint();
 	}
+
+	// ---------------------- GETTERS AND SETTERS ----------------------
+
+	public JButton getStartButton() { return this.startButton; }
 
 }

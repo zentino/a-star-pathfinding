@@ -2,6 +2,7 @@ package astar;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -9,6 +10,8 @@ public class AStarLogic {
 
 	private int columns = 25;
 	private int rows = 25;
+	public static int VERTICAL_HORIZONTAL_MOVEMENT_COST = 10;
+	public static int DIAGONAL_MOVEMENT_COST = 14;
 	// Grid
 	private Node[][] nodes;
 	private Node startNode;
@@ -21,6 +24,8 @@ public class AStarLogic {
 	private List<Node> visited = new ArrayList<>();
 	// Used to reconstruct the path
 	private List<Node> path = new ArrayList<>();
+	// Keep track of the total movement cost from the start location
+	private HashMap<Node, Integer> costSoFar = new HashMap<>();
 
 	public AStarLogic() {
 		nodes = new Node[columns][rows];
@@ -34,15 +39,16 @@ public class AStarLogic {
 
 		// Define the comparator for the priority queue
 		frontier = new PriorityQueue<Node>((node1, node2) -> {
-			if (node1.getHcost() < node2.getHcost()) {
+			if (node1.getFcost() < node2.getFcost()) {
 				return -1;
-			} else if (node1.getHcost() > node2.getHcost()) {
+			} else if (node1.getFcost() > node2.getFcost()) {
 				return 1;
 			}
 			return 0;
 		});
 		frontier.offer(startNode);
 		visited.add(startNode);
+		costSoFar.put(startNode, 0);
 	}
 
 	/**
@@ -53,14 +59,19 @@ public class AStarLogic {
 	public void findPath() {
 		if (!frontier.isEmpty() && !pathFound) {
 			Node current = frontier.poll();
+
 			// If current == goal (early exit)
 			if (current.getX() == endNode.getX() && current.getY() == endNode.getY()) {
 				pathFound = true;
 				return;
 			}
 			for (Node nextNode : current.getNeighbors()) {
-				if (!visited.contains(nextNode)) {
+				int newTotalMovementCost = costSoFar.get(current) + getMovementCost(current, nextNode);
+				if (!costSoFar.containsKey(nextNode) || newTotalMovementCost < costSoFar.get(nextNode)) {
+					costSoFar.put(nextNode, newTotalMovementCost);
 					nextNode.setHcost(calculateHeuristicCost(endNode, nextNode));
+					nextNode.setGcost(newTotalMovementCost);
+					nextNode.setFcost(nextNode.getHcost() + newTotalMovementCost);
 					nextNode.setParent(current);
 					frontier.offer(nextNode);
 					visited.add(nextNode);
@@ -70,7 +81,34 @@ public class AStarLogic {
 	}
 
 	/**
-	 * Reconstruct the path from goal to start
+	 * Get Movement costs from a node A to a node B
+	 *
+	 * @param a
+	 * @param b
+	 * @return Diagonal neighbor -> diagonal movement cost, Vertical/Horizontal neighbor -> vertical/horizontal movement cost
+	 */
+	private int getMovementCost(Node a, Node b) {
+		if (a.getX() == b.getX() || a.getY() == b.getY()) {
+			return VERTICAL_HORIZONTAL_MOVEMENT_COST;
+		}
+		return DIAGONAL_MOVEMENT_COST;
+	}
+
+	/**
+	 * Calculates the Manhattan distance on a square grid
+	 *
+	 * @param goal
+	 * @param start
+	 * @return heuristic cost
+	 */
+	private int calculateHeuristicCost(Node goal, Node start) {
+		int heuristicCost = (Math.abs(goal.getX() - start.getX())
+				+ Math.abs(goal.getY() - start.getY())) * VERTICAL_HORIZONTAL_MOVEMENT_COST;
+		return heuristicCost;
+	}
+
+	/**
+	 * Reconstruct the path from goal to start.
 	 */
 	public void reconstructPath() {
 		Node current = endNode;
@@ -87,16 +125,6 @@ public class AStarLogic {
 			}
 		}
 	}
-	/**
-	 * Calculates the Manhattan distance on a square grid
-	 * @param goal
-	 * @param start
-	 * @return heuristic cost
-	 */
-	private int calculateHeuristicCost(Node goal, Node start) {
-		int heuristicCost = Math.abs(goal.getX() - start.getX()) + Math.abs(goal.getY() - start.getY());
-		return heuristicCost;
-	}
 
 	/**
 	 * Find all horizontal/vertical and diagonal neighbors of every node. All
@@ -104,9 +132,10 @@ public class AStarLogic {
 	 * nodes have 8.
 	 */
 	public void findNeighbors() {
+		Node current;
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {
-				Node current = nodes[x][y];
+				current = nodes[x][y];
 
 				if (x + 1 < columns && y - 1 >= 0) {
 					current.addNeighbor(nodes[x + 1][y - 1]);
