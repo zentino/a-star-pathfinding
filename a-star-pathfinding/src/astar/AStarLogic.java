@@ -15,9 +15,9 @@ public class AStarLogic {
 	private Node endNode;
 	private boolean pathFound = false;
 
-	// Keep track of an expanding ring called the frontier
+	// Keep track of an expanding ring called the frontier(Open list)
 	private PriorityQueue<Node> frontier;
-	// Keep track of all nodes that were visited
+	// Keep track of all nodes that were visited (Closed list)
 	private List<Node> visited = new ArrayList<>();
 	// Used to reconstruct the path
 	private List<Node> path = new ArrayList<>();
@@ -26,6 +26,7 @@ public class AStarLogic {
 		nodes = new Node[columns][rows];
 		init();
 		findNeighbors();
+		// Set start and end node coordinates
 		startNode = nodes[0][18];
 		startNode.setStart(true);
 		endNode = nodes[12][12];
@@ -107,27 +108,27 @@ public class AStarLogic {
 			for (int y = 0; y < rows; y++) {
 				Node current = nodes[x][y];
 
-				// if(x + 1 < columns && y - 1 >= 0) {
-				// current.addNeighbor(nodes[x + 1][y - 1]);
-				// }
+				if (x + 1 < columns && y - 1 >= 0) {
+					current.addNeighbor(nodes[x + 1][y - 1]);
+				}
 				if (x + 1 < columns) {
 					current.addNeighbor(nodes[x + 1][y]);
 				}
-				// if(x + 1 < columns && y + 1 < rows) {
-				// current.addNeighbor(nodes[x + 1][y + 1]);
-				// }
+				if (x + 1 < columns && y + 1 < rows) {
+					current.addNeighbor(nodes[x + 1][y + 1]);
+				}
 				if (y + 1 < rows) {
 					current.addNeighbor(nodes[x][y + 1]);
 				}
-				// if(x - 1 >= 0 && y + 1 < rows) {
-				// current.addNeighbor(nodes[x - 1][y + 1]);
-				// }
+				if (x - 1 >= 0 && y + 1 < rows) {
+					current.addNeighbor(nodes[x - 1][y + 1]);
+				}
 				if (x - 1 >= 0) {
 					current.addNeighbor(nodes[x - 1][y]);
 				}
-				// if(y - 1 >= 0 && x - 1 >= 0) {
-				// current.addNeighbor(nodes[x - 1][y - 1]);
-				// }
+				if (y - 1 >= 0 && x - 1 >= 0) {
+					current.addNeighbor(nodes[x - 1][y - 1]);
+				}
 
 				if (y - 1 >= 0) {
 					current.addNeighbor(nodes[x][y - 1]);
