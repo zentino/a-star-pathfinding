@@ -11,6 +11,7 @@ public class Node {
 	private boolean start;
 	private boolean end;
 	private List<Node> neighbors = new ArrayList<>();
+	private boolean blocked = false;
 
 	// Heuristic cost of the current node
 	private int hCost;
@@ -60,4 +61,8 @@ public class Node {
 	public int getFcost() { return fCost; }
 
 	public void setFcost(int fCost) { this.fCost = fCost; }
+
+	public boolean isBlocked() { return blocked; }
+
+	public void setBlocked(boolean blocked) { this.blocked = blocked; }
 }

@@ -34,9 +34,9 @@ public class AStarLogic {
 		init();
 		findNeighbors();
 		// Set start and end node coordinates
-		startNode = nodes[0][18];
+		startNode = nodes[3][12];
 		startNode.setStart(true);
-		endNode = nodes[12][12];
+		endNode = nodes[21][12];
 		endNode.setEnd(true);
 
 		// Define the comparator for the priority queue
@@ -69,14 +69,16 @@ public class AStarLogic {
 			}
 			for (Node nextNode : current.getNeighbors()) {
 				int newTotalMovementCost = costSoFar.get(current) + getMovementCost(current, nextNode);
-				if (!costSoFar.containsKey(nextNode) || newTotalMovementCost < costSoFar.get(nextNode)) {
-					costSoFar.put(nextNode, newTotalMovementCost);
-					nextNode.setHcost(calculateHeuristicCost(endNode, nextNode));
-					nextNode.setGcost(newTotalMovementCost);
-					nextNode.setFcost(nextNode.getHcost() + newTotalMovementCost);
-					nextNode.setParent(current);
-					frontier.offer(nextNode);
-					visited.add(nextNode);
+				if(!nextNode.isBlocked()) {
+					if (!costSoFar.containsKey(nextNode) || newTotalMovementCost < costSoFar.get(nextNode)) {
+						costSoFar.put(nextNode, newTotalMovementCost);
+						nextNode.setHcost(calculateHeuristicCost(endNode, nextNode));
+						nextNode.setGcost(newTotalMovementCost);
+						nextNode.setFcost(nextNode.getHcost() + newTotalMovementCost);
+						nextNode.setParent(current);
+						frontier.offer(nextNode);
+						visited.add(nextNode);
+					}
 				}
 			}
 		}
@@ -169,6 +171,18 @@ public class AStarLogic {
 		}
 	}
 
+	public void addBlockedNode(int x, int y) {
+		Node node = nodes[x][y];
+		node.setBlocked(true);
+		blockedNodes.add(node);
+	}
+
+	public void removeBlockedNode(int x, int y) {
+		Node node = nodes[x][y];
+		node.setBlocked(false);
+		blockedNodes.remove(node);
+	}
+
 	// ---------------------- GETTERS AND SETTERS ----------------------
 
 	public int getColumns() { return columns; }
@@ -186,4 +200,6 @@ public class AStarLogic {
 	public Node getEndNode() { return endNode;}
 
 	public boolean isPathFound() { return pathFound; }
+
+	public List<Node> getBlockedNodes() { return blockedNodes; }
 }

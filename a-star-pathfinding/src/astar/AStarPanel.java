@@ -41,7 +41,7 @@ public class AStarPanel extends JPanel implements ActionListener {
 		buttons.setBounds(0, PANEL_HEIGHT - 50, PANEL_WIDTH, PANEL_HEIGHT);
 		this.add(buttons);
 
-		myTimerDelay = 500;
+		myTimerDelay = 20;
 		myTimer = new Timer(myTimerDelay, this);
 		myTimer.start();
 	}
@@ -107,6 +107,12 @@ public class AStarPanel extends JPanel implements ActionListener {
 			g.fillRect(node.getX() * rectWidth, node.getY() * rectHeight, rectWidth, rectHeight);
 			// TODO REFACTOR
 			drawCosts(node,g);
+		}
+
+		// Draw blocked nodes
+		for(Node node: aStarLogic.getBlockedNodes()) {
+			g.setColor(Color.BLACK);
+			g.fillRect(node.getX() * rectWidth, node.getY() * rectHeight, rectWidth, rectHeight);
 		}
 
 		// Draw the start node
